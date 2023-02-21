@@ -1,0 +1,61 @@
+name: Azure CLI Bug Report Template
+description: Use this template to report a bug
+body:
+  - type: input
+    id: command
+    attributes:
+      label: Related command
+      description: Please provide the related command with az {command} if you can, so that we can quickly route to the related team for help.
+      placeholder: e.g., `az vm create`
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder:
+      value:
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: to-reproduce
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder:
+      value:
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder:
+      value:
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment-summary
+    attributes:
+      label: Environment summary
+      description: Install Method (e.g. pip, interactive script, apt-get, Docker, MSI, edge build) / CLI version (`az --version`) / OS version / Shell Type (e.g. bash, cmd.exe, Bash on Windows)
+      placeholder: "Platform: Windows-10-10.0.19044-SP0\nPython Version: Python 3.10.4\nInstaller: MSI\nCLI version: 2.37.0\n\nExtensions:\ncontainerapp 0.3.5\ndeploy-to-azure 0.2.0\nlog-analytics 0.2.2\n\nDependencies:\nmsal 1.18.0b1\nazure-mgmt-resource 21.1.0b1\n"
+      value:
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+      placeholder:
+      value:
+      render: shell
+    validations:
+      required: false
