@@ -1,5 +1,6 @@
 allowed_branches:
   - "dev"
+  - "release"
 release_notify:
   messages:
     - name: "aaz"
