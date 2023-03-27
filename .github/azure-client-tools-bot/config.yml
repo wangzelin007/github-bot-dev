@@ -1,5 +1,6 @@
+allowed_branches:
+  - "dev"
 release_notify:
-  enable: True
   messages:
     - name: "aaz"
       targetType: "channel"
@@ -24,7 +25,6 @@ pull_request:
       init_comment: |
         Azure.azure-cli Full Test testing in progress.
 cli_common_issues:
-  enable: True
   issues:
     - tag: unofficial_cli
       keywords:
