@@ -14,4 +14,4 @@ jobs:
           repository: 'wangzelin007/github-bot-dev'
           number: ${{ github.event.issue.number }}
           id: thank-you-comment
-          message: 'Thank you for opening this Issue :pray:'
+          message: 'Thank you for opening this issue, we will look into it.'

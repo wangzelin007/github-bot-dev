@@ -1,0 +1,27 @@
+on:
+  pull_request:
+    types: [opened]
+    
+jobs:
+  thank-user:
+    runs-on: ubuntu-20.04
+    name: Say thanks for the PR
+    steps:
+      - name: get message
+        run: |
+          # 获取PR的标题
+          # 提取 [] 或者 {} 中间的内容
+          # 设置到环境变量 message 中
+          # 如果不存在 [] 或者 {} 则设置为 "Thank you for opening this PR :pray:"
+          echo "message=$(echo '${{ github.event.pull_request.title }}' | grep -o '\[.*\]' | sed 's/[][]//g' | sed 's/[][]//g')" >> $GITHUB_ENV
+          if [ -z "${{ env.message }}" ]; then
+              echo "message=$(echo 'Thank you for your contribution! We will review the pull request and get back to you soon.')" >> $GITHUB_ENV
+          fi
+      - name: comment on the pull request
+        uses: hasura/comment-progress@v2.2.0
+        with:
+          github-token: ${{ secrets.WANGZELIN_TOKEN }}
+          repository: 'wangzelin007/github-bot-dev'
+          number: ${{ github.event.number }}
+          id: thank-you-comment
+          message: "${{ env.message }}"
