@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: get message
         run: |
-          echo "message=$(echo '${{ github.event.pull_request.title }}' | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|\[|\]|\}//g')" >> $GITHUB_ENV
+          echo "message=$(echo '${{ github.event.pull_request.title }}' | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')" >> $GITHUB_ENV
           if [ -z "${{ env.message }}" ]; then
               echo "message=$(echo 'Thank you for your contribution! We will review the pull request and get back to you soon.')" >> $GITHUB_ENV
           fi
