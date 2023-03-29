@@ -1,0 +1,29 @@
+on:
+  pull_request:
+    types: [opened]
+    
+jobs:
+  thank-user:
+    runs-on: ubuntu-20.04
+    name: Say thanks for the PR
+    steps:
+      - name: comment on the pull request
+        uses: hasura/comment-progress@v2.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: 'wangzelin007/github-bot-dev'
+          number: ${{ github.event.number }}
+          id: thank-you-comment
+          message: 'Thank you for opening this PR :pray:'
+  thank-user:
+    runs-on: ubuntu-20.04
+    name: Say thanks for the Issue
+    steps:
+      - name: comment on the issue
+        uses: hasura/comment-progress@v2.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: 'wangzelin007/github-bot-dev'
+          number: ${{ github.event.number }}
+          id: thank-you-comment
+          message: 'Thank you for opening this Issue :pray:'
