@@ -3,14 +3,14 @@ files_check:
       - "test_necessary_files/HISTORY.rst"
       - "test_necessary_files/setup.py"
     comment: |
-        If you want to release the new extension version.
+      If you want to release the new extension version.
       
-        Please write the description of changes into HISTORY.rst and update setup.py.
+      Please write the description of changes into HISTORY.rst and update setup.py.
   - files:
       - "a.txt"
       - "b.txt"
     comment: |
-        Missing file a.txt and b.txt.
+      Missing file a.txt and b.txt.
 allowed_branches:
   - "dev"
   - "release"
