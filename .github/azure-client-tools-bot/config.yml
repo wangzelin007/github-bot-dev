@@ -1,7 +1,7 @@
 files_check:
   - files:
-      - "HISTORY.rst"
-      - "setup.py"
+      - "test_necessary_files/HISTORY.rst"
+      - "test_necessary_files/setup.py"
     comment: |
         If you want to release the new extension version.
       
