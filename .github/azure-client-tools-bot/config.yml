@@ -10,17 +10,17 @@ files_check:
       - "b.txt"
     comment: |
       Missing file a.txt and b.txt.
-allowed_branches:
-  - "dev"
-  - "release"
-release_notify:
-  messages:
-    - name: "aaz"
-      targetType: "channel"
-      recipients: "19%3ab1852f87188b4a2387efa04cc3b46dc0%40thread.tacv2"
-    - name: "aaz"
-      targetType: "person"
-      recipients: "zelinwang@microsoft.com"
+#allowed_branches:
+#  - "dev"
+#  - "release"
+#release_notify:
+#  messages:
+#    - name: "aaz"
+#      targetType: "channel"
+#      recipients: "19%3ab1852f87188b4a2387efa04cc3b46dc0%40thread.tacv2"
+#    - name: "aaz"
+#      targetType: "person"
+#      recipients: "zelinwang@microsoft.com"
 #auto_choose_milestone:
 #  pr_expected_days: 7
 #pull_request:
@@ -37,68 +37,68 @@ release_notify:
 #      comment_title: "AzureCLI-FullTest"
 #      init_comment: |
 #        Azure.azure-cli Full Test testing in progress.
-cli_common_issues:
-  issues:
-    - tag: unofficial_cli
-      keywords:
-        - "2\\.0\\.80"
-        - "2\\.0\\.81"
-        - "2\\.18\\.0"
-        - "dist-packages"
-      solution: |
-        Hi @${author},
-
-        This is not the official Azure CLI published by Microsoft.
-
-        How to tell if the installed Azure CLI is unofficial:
-        - https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375197646
-        - https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375197823
-
-        Please follow  https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt to install Microsoft official Azure CLI.
-
-        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
-    - tag: latest_api_version_not_available
-      keywords:
-        - "No registered resource provider found"
-      solution: |
-        Hi @${author},
-
-        This is a known issue.
-
-        Please follow https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375192229 to get temporary workaround.
-
-        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
-    - tag: az_login_fails
-      keywords:
-        - "WinError 0"
-        - "WinError -2146893813"
-        - "WinError -2146892987"
-        - "WinError 87"
-      solution: |
-        Hi @${author},
-
-        This is a known issue.
-
-        Please follow https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375192459 to get temporary workaround.
-
-        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
-    - tag: cloud_shell_fails
-      keywords:
-        - "\\[Errno 30\\]"
-      solution: |
-        Hi @${author},
-
-        This is a known issue.
-
-        Please follow https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375192696 to get temporary workaround.
-
-        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
-    - tag: not_latest_cli
-      keywords:
-        - "azure-cli[^0-9a-z\n]*(2\\.\\d+\\.\\d+)"
-      solution: |
-        Hi @${author},
-
-        ${currentVersion} is not the latest Azure CLI(${latestVersion}).
-
-        Please upgrade to the latest Azure CLI version by following https://learn.microsoft.com/en-us/cli/azure/update-azure-cli.
+#cli_common_issues:
+#  issues:
+#    - tag: unofficial_cli
+#      keywords:
+#        - "2\\.0\\.80"
+#        - "2\\.0\\.81"
+#        - "2\\.18\\.0"
+#        - "dist-packages"
+#      solution: |
+#        Hi @${author},
+#
+#        This is not the official Azure CLI published by Microsoft.
+#
+#        How to tell if the installed Azure CLI is unofficial:
+#        - https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375197646
+#        - https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375197823
+#
+#        Please follow  https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt to install Microsoft official Azure CLI.
+#
+#        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
+#    - tag: latest_api_version_not_available
+#      keywords:
+#        - "No registered resource provider found"
+#      solution: |
+#        Hi @${author},
+#
+#        This is a known issue.
+#
+#        Please follow https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375192229 to get temporary workaround.
+#
+#        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
+#    - tag: az_login_fails
+#      keywords:
+#        - "WinError 0"
+#        - "WinError -2146893813"
+#        - "WinError -2146892987"
+#        - "WinError 87"
+#      solution: |
+#        Hi @${author},
+#
+#        This is a known issue.
+#
+#        Please follow https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375192459 to get temporary workaround.
+#
+#        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
+#    - tag: cloud_shell_fails
+#      keywords:
+#        - "\\[Errno 30\\]"
+#      solution: |
+#        Hi @${author},
+#
+#        This is a known issue.
+#
+#        Please follow https://github.com/wangzelin007/github-bot-tutorial/issues/130#issuecomment-1375192696 to get temporary workaround.
+#
+#        If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
+#    - tag: not_latest_cli
+#      keywords:
+#        - "azure-cli[^0-9a-z\n]*(2\\.\\d+\\.\\d+)"
+#      solution: |
+#        Hi @${author},
+#
+#        ${currentVersion} is not the latest Azure CLI(${latestVersion}).
+#
+#        Please upgrade to the latest Azure CLI version by following https://learn.microsoft.com/en-us/cli/azure/update-azure-cli.
