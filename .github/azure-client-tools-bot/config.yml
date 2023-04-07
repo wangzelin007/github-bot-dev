@@ -21,8 +21,8 @@ release_notify:
     - name: "aaz"
       targetType: "person"
       recipients: "zelinwang@microsoft.com"
-auto_choose_milestone:
-  pr_expected_days: 7
+#auto_choose_milestone:
+#  pr_expected_days: 7
 #pull_request:
 #  comment:
 #    - azure_pipeline:
