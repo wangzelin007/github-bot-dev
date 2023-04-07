@@ -23,20 +23,20 @@ release_notify:
       recipients: "zelinwang@microsoft.com"
 auto_choose_milestone:
   pr_expected_days: 7
-#pull_request:
-#  comment:
-#    - azure_pipeline:
-#        allow_list:
-#          - "wangzein007-azure-cli-full-test"
-#        result_path: "/test_results/"
-#      group_by_keys:
-#        - "Module"
-#        - "Profile"
-#        - "PythonVersion"
-#      template_path: "templates/comment1.handlebars"
-#      comment_title: "AzureCLI-FullTest"
-#      init_comment: |
-#        Azure.azure-cli Full Test testing in progress.
+pull_request:
+  comment:
+    - azure_pipeline:
+        allow_list:
+          - "wangzein007-azure-cli-full-test"
+        result_path: "/test_results/"
+      group_by_keys:
+        - "Module"
+        - "Profile"
+        - "PythonVersion"
+      template_path: "templates/comment1.handlebars"
+      comment_title: "AzureCLI-FullTest"
+      init_comment: |
+        Azure.azure-cli Full Test testing in progress.
 cli_common_issues:
   issues:
     - tag: unofficial_cli
