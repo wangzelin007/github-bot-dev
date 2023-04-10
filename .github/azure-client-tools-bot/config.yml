@@ -1,15 +1,38 @@
 files_check:
   - files:
-      - "HISTORY.rst"
-      - "setup.py"
+      - "src/account/HISTORY.rst"
+      - "src/account/setup.py"
     comment: |
+      Without regex
       If you want to release the new extension version.
       Please write the description of changes into HISTORY.rst and update setup.py.
+    is_regex: false
+    type: necessary
   - files:
-      - "a.txt"
-      - "b.txt"
+      - "src/b.*/HISTORY.rst"
+      - "src/b.*/setup.py"
     comment: |
-      Missing file a.txt and b.txt.
+      With regex
+      If you want to release the new extension version.
+      Please write the description of changes into HISTORY.rst and update setup.py.
+    is_regex: true
+    type: necessary
+  - files:
+      - "src/acr/HISTORY.rst"
+      - "src/acr/setup.py"
+    comment: |
+      Without regex
+      Please do not modify!
+    is_regex: false
+    type: forbidden
+  - files:
+      - "src/c.*/HISTORY.rst"
+      - "src/c.*/HISTORY.rst"
+    comment: |
+      With regex
+      Please do not modify!
+    is_regex: true
+    type: forbidden
 allowed_branches:
   - "dev"
   - "release"
