@@ -27,7 +27,7 @@ files_check:
     type: forbidden
   - files:
       - "src/c.*/HISTORY.rst"
-      - "src/c.*/HISTORY.rst"
+      - "src/c.*/setup.py"
     comment: |
       With regex
       Please do not modify!
