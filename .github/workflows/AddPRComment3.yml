@@ -1,0 +1,34 @@
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  thank-user:
+    runs-on: ubuntu-20.04
+    name: Say thanks for the PR
+    steps:
+      - name: get message
+        run: |
+          import json
+          import os
+          import shlex
+          with open('${{ github.event_path }}') as fh:
+              event = json.load(fh)
+          escaped = shlex.quote(event['pull_request']['title'])
+          with open(os.environ['GITHUB_ENV'], 'a') as fh:
+              print(f'PR_TITLE={escaped}', file=fh)
+        shell: python3 {0}
+#           title=$(echo '${{ github.event.pull_request.title }}' | sed "s/'/'\\\\''/g")
+#           message=$(echo '${{ github.event.pull_request.title }}' | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
+#           echo "message=$message" >> $GITHUB_ENV
+#           if [ -z $message ]; then
+#               echo "message=$(echo 'Thank you for your contribution! We will review the pull request and get back to you soon.')" >> $GITHUB_ENV
+#           fi
+#       - name: comment on the pull request
+#         uses: mshick/add-pr-comment@v2
+#         with:
+#           repo-token: ${{ secrets.WANGZELIN_TOKEN }}
+#           message: "${{ env.message }}"
