@@ -1,3 +1,4 @@
+similar_issue: true
 files_check:
   - files:
       - "src/account/HISTORY.rst"
