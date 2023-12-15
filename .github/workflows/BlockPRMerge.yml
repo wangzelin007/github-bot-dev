@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check "do-not-merge" label
-        if: github.event_name == 'pull_request' && github.event.action == 'labeled'
         uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.CLI_BOT }}
