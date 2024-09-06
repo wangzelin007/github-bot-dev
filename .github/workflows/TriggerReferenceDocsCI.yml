@@ -1,0 +1,16 @@
+name: Trigger Microsoft Learn Docs Reference CI
+
+on:
+  release:
+    types:
+      - released
+
+permissions:
+  id-token: write
+
+jobs:
+  RunAzurePipeline:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+    - run: echo "Release trigger works!"
