@@ -4,7 +4,7 @@ name: Trigger ADO Pipeline
 # This triggers the ADO Pipeline with issue information
 on:
   issues:
-    types: [opened]
+    types: [opened, closed, reopened]
 
 permissions:
   contents: read
@@ -36,7 +36,8 @@ jobs:
             const issue_number = issue.number;
             const issue_title = issue.title;
             const issue_body = issue.body;
-            
+            const issue_state = issue.state; // "open", "closed", etc.
+
             // Retrieve comments using octokit
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -44,24 +45,27 @@ jobs:
               issue_number: issue_number
             });
 
-            // Collect comments
-            let comment_data = '';
-            if (comments.data.length > 0) {
-              comment_data = comments.data.map(comment => `Comment by ${comment.user.login}: ${comment.body}`).join("\n");
-            }
+            // Collect comments in JSON format as an array
+            const comment_list = comments.data.map(comment => ({
+              user: comment.user.login,
+              body: comment.body,
+              created_at: comment.created_at
+            }));
 
-            // Log the issue details and comments
+            // Log the issue details and comments (optional)
             console.log('Issue Number:', issue_number);
             console.log('Issue Title:', issue_title);
             console.log('Issue Body:', issue_body);
-            console.log('Comments:', comment_data);
+            console.log('Issue State:', issue_state);
+            console.log('Comments:', JSON.stringify(comment_list, null, 2));
 
-            // Return the issue data
+            // Return issue details and comments in JSON format
             return {
               issue_number: issue_number,
               issue_title: issue_title,
               issue_body: issue_body,
-              comments: comment_data
+              issue_state: issue_state,
+              comments: JSON.stringify(comment_list)
             };
 
       # - name: Azure CLI
