@@ -1,0 +1,86 @@
+name: Trigger ADO Pipeline
+
+# Run this workflow when an issue is opened
+# This triggers the ADO Pipeline with issue information
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    name: Trigger Extension Release Pipeline on Issue Open
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@63c24ba6bd7ba022e95695ff85de572c04a18142 # v2.7.0
+        with:
+          egress-policy: audit
+
+      # - name: Azure login
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.ADO_SP_ClientID }}
+      #     tenant-id: ${{ secrets.ADO_SP_TenantID }}
+      #     allow-no-subscriptions: true
+
+      - name: Get issue details
+        id: issue_details
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const issue_number = issue.number;
+            const issue_title = issue.title;
+            const issue_body = issue.body;
+            
+            // Retrieve comments if there are any
+            const { data: comments } = await github.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number
+            });
+
+            // Collect comments
+            let comment_data = '';
+            if (comments.length > 0) {
+              comment_data = comments.map(comment => `Comment by ${comment.user.login}: ${comment.body}`).join("\n");
+            }
+
+            // Log the issue details and comments
+            console.log('Issue Number:', issue_number);
+            console.log('Issue Title:', issue_title);
+            console.log('Issue Body:', issue_body);
+            console.log('Comments:', comment_data);
+          
+            // Set issue data as outputs
+            return {
+              issue_number: issue_number,
+              issue_title: issue_title,
+              issue_body: issue_body,
+              comments: comment_data
+            };
+
+      # - name: Azure CLI
+      #   uses: azure/cli@v2
+      #   env:
+      #     ado-org: ${{ secrets.ADO_ORGANIZATION }}
+      #     ado-project: ${{ secrets.ADO_PROJECT }}
+      #     ado-pipeline-id: ${{ secrets.ADO_PIPELINE_ID }}
+      #     issue-number: ${{ steps.issue_details.outputs.issue_number }}
+      #     issue-title: ${{ steps.issue_details.outputs.issue_title }}
+      #     issue-body: ${{ steps.issue_details.outputs.issue_body }}
+      #     comments: ${{ steps.issue_details.outputs.comments }}
+      #   with:
+      #     inlineScript: |
+      #       az pipelines build queue \
+      #         --definition-id ${{ env.ado-pipeline-id }} \
+      #         --organization ${{ env.ado-org }} \
+      #         --project ${{ env.ado-project }} \
+      #         --variables issue_number=${{ env.issue-number }} \
+      #                     issue_title="${{ env.issue-title }}" \
+      #                     issue_body="${{ env.issue-body }}" \
+      #                     comments="${{ env.comments }}"
