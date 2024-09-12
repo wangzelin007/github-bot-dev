@@ -37,8 +37,8 @@ jobs:
             const issue_title = issue.title;
             const issue_body = issue.body;
             
-            // Retrieve comments if there are any
-            const { data: comments } = await github.issues.listComments({
+            // Retrieve comments using octokit
+            const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue_number
@@ -46,8 +46,8 @@ jobs:
 
             // Collect comments
             let comment_data = '';
-            if (comments.length > 0) {
-              comment_data = comments.map(comment => `Comment by ${comment.user.login}: ${comment.body}`).join("\n");
+            if (comments.data.length > 0) {
+              comment_data = comments.data.map(comment => `Comment by ${comment.user.login}: ${comment.body}`).join("\n");
             }
 
             // Log the issue details and comments
@@ -55,8 +55,8 @@ jobs:
             console.log('Issue Title:', issue_title);
             console.log('Issue Body:', issue_body);
             console.log('Comments:', comment_data);
-          
-            // Set issue data as outputs
+
+            // Return the issue data
             return {
               issue_number: issue_number,
               issue_title: issue_title,
