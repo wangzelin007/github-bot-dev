@@ -85,4 +85,4 @@ jobs:
               --definition-id ${{ env.ado-pipeline-id }} \
               --organization ${{ env.ado-org }} \
               --project ${{ env.ado-project }} \
-              --variables issue_data='${{ env.ISSUE_DATA }}'
+              --variables issue_data=${{ env.ISSUE_DATA }}
