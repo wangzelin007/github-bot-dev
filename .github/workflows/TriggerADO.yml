@@ -32,26 +32,28 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const core = require('@actions/core');
+            
             const issue = context.payload.issue;
             const issue_number = issue.number;
             const issue_title = issue.title;
             const issue_body = issue.body;
             const issue_state = issue.state; // "open", "closed", etc.
-
+            
             // Retrieve comments using octokit
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue_number
             });
-
+            
             // Collect comments in JSON format as an array
             const comment_list = comments.data.map(comment => ({
               user: comment.user.login,
               body: comment.body,
               created_at: comment.created_at
             }));
-
+            
             const output = {
               issue_number: issue_number,
               issue_title: issue_title,
@@ -59,9 +61,11 @@ jobs:
               issue_state: issue_state,
               comments: comment_list
             };
-
-            fs.writeFileSync(process.env.GITHUB_ENV, `ISSUE_DATA=${JSON.stringify(output)}\n`);
-
+            
+            const issueData = JSON.stringify(output);
+            console.log("Output:", issueData);
+            
+            core.exportVariable('ISSUE_DATA', issueData);
 
       - name: Parse issue details from environment variable
         run: |
