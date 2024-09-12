@@ -52,29 +52,24 @@ jobs:
               created_at: comment.created_at
             }));
 
-            // Log the issue details and comments (optional)
-            console.log('Issue Number:', issue_number);
-            console.log('Issue Title:', issue_title);
-            console.log('Issue Body:', issue_body);
-            console.log('Issue State:', issue_state);
-            console.log('Comments:', JSON.stringify(comment_list, null, 2));
-
-            // Return issue details and comments in JSON format
-            return {
+            const output = {
               issue_number: issue_number,
               issue_title: issue_title,
               issue_body: issue_body,
               issue_state: issue_state,
-              comments: JSON.stringify(comment_list)
+              comments: comment_list
             };
 
-      - name: Set issue details as env vars
+            fs.writeFileSync(process.env.GITHUB_ENV, `ISSUE_DATA=${JSON.stringify(output)}\n`);
+
+
+      - name: Parse issue details from environment variable
         run: |
-          echo "ISSUE_NUMBER=${{ steps.issue_details.outputs.issue_number }}" >> $GITHUB_ENV
-          echo "ISSUE_TITLE=${{ steps.issue_details.outputs.issue_title }}" >> $GITHUB_ENV
-          echo "ISSUE_BODY=${{ steps.issue_details.outputs.issue_body }}" >> $GITHUB_ENV
-          echo "ISSUE_STATE=${{ steps.issue_details.outputs.issue_state }}" >> $GITHUB_ENV
-          echo "COMMENTS=${{ steps.issue_details.outputs.comments }}" >> $GITHUB_ENV
+          echo "Issue Data: $ISSUE_DATA"
+          echo "Issue Number: $(echo $ISSUE_DATA | jq -r '.issue_number')"
+          echo "Issue Title: $(echo $ISSUE_DATA | jq -r '.issue_title')"
+          echo "Issue State: $(echo $ISSUE_DATA | jq -r '.issue_state')"
+          echo "Comments: $(echo $ISSUE_DATA | jq -r '.comments')"
 
       - name: Azure CLI
         uses: azure/cli@v2
@@ -88,8 +83,4 @@ jobs:
               --definition-id ${{ env.ado-pipeline-id }} \
               --organization ${{ env.ado-org }} \
               --project ${{ env.ado-project }} \
-              --variables issue_number=$ISSUE_NUMBER \
-                          issue_title="$ISSUE_TITLE" \
-                          issue_body="$ISSUE_BODY" \
-                          issue_state="$ISSUE_STATE" \
-                          comments='$COMMENTS'
+              --variables issue_data="${{ env.ISSUE_DATA }}"
