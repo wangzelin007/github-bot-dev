@@ -32,8 +32,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const core = require('@actions/core');
-            
             const issue = context.payload.issue;
             const issue_number = issue.number;
             const issue_title = issue.title;
