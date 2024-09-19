@@ -79,11 +79,12 @@ jobs:
           ado-org: ${{ secrets.ADO_ORGANIZATION }}
           ado-project: ${{ secrets.ADO_PROJECT }}
           ado-pipeline-id: ${{ secrets.ADO_PIPELINE_ID }}
+          issue-data: ${{ env.ISSUE_DATA }}
         with:
           inlineScript: |
             az pipelines build queue \
               --definition-id ${{ env.ado-pipeline-id }} \
               --organization ${{ env.ado-org }} \
               --project ${{ env.ado-project }} \
-              --variables issue_data="${{ env.ISSUE_DATA }}" \
+              --variables issue_data="$issue-data" \
               --debug --verbose
