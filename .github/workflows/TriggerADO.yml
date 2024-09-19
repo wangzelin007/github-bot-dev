@@ -86,5 +86,5 @@ jobs:
               --definition-id ${{ env.ado-pipeline-id }} \
               --organization ${{ env.ado-org }} \
               --project ${{ env.ado-project }} \
-              --variables issue_data='$issue-data' \
+              --variables issue_data='${{ env.issue-data }}' \
               --debug --verbose
