@@ -34,30 +34,9 @@ jobs:
           script: |
             const issue = context.payload.issue;
             const issue_number = issue.number;
-            const issue_title = issue.title;
-            const issue_body = issue.body;
-            const issue_state = issue.state; // "open", "closed", etc.
-            
-            // Retrieve comments using octokit
-            const comments = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue_number
-            });
-            
-            // Collect comments in JSON format as an array
-            const comment_list = comments.data.map(comment => ({
-              user: comment.user.login,
-              body: comment.body,
-              created_at: comment.created_at
-            }));
-            
+
             const output = {
               issue_number: issue_number,
-              issue_title: issue_title,
-              issue_body: issue_body,
-              issue_state: issue_state,
-              comments: comment_list
             };
             
             const issueData = JSON.stringify(output);
@@ -69,9 +48,6 @@ jobs:
         run: |
           echo "Issue Data: $ISSUE_DATA"
           echo "Issue Number: $(echo $ISSUE_DATA | jq -r '.issue_number')"
-          echo "Issue Title: $(echo $ISSUE_DATA | jq -r '.issue_title')"
-          echo "Issue State: $(echo $ISSUE_DATA | jq -r '.issue_state')"
-          echo "Comments: $(echo $ISSUE_DATA | jq -r '.comments')"
 
       - name: Azure CLI
         uses: azure/cli@v2
