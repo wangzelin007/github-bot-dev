@@ -39,6 +39,7 @@ jobs:
             message_result/output.txt
 
   comment-pr:
+    needs: [get-message]
     runs-on: ubuntu-latest
     name: Say thanks for the PR
     permissions:
