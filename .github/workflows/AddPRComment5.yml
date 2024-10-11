@@ -26,7 +26,7 @@ jobs:
           fi
 
           # Print message for debugging
-          echo "Message to be posted: $message"
+          echo "Message to be posted: $message end."
 
           # Comment on the PR using GitHub API
           curl -X POST \
