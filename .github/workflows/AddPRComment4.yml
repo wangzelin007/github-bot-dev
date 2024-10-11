@@ -16,15 +16,15 @@ jobs:
         run: |
           pwd
           # message="Test Trigger Condition"
-          # message=$(echo "$TITLE" | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
+          message=$(echo "$TITLE" | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
           # message=$(grep -oP '[{\[][^}\]]+[}\]]' <<< "$TITLE" | sed 's/[{}\[\]]//g')
-          message=$(echo "$TITLE")
-          echo "message=$message" >> $GITHUB_ENV
+          # message=$(echo "$TITLE")
+          # echo "message=$message" >> $GITHUB_ENV
           if [ -z $message ]; then
               echo "message=$(echo 'Thank you for your contribution! We will review the pull request and get back to you soon.')" >> $GITHUB_ENV
           fi
-      - name: comment on the pull request
-        uses: mshick/add-pr-comment@v2
-        with:
-          repo-token: ${{ secrets.WANGZELIN_TOKEN }}
-          message: "${{ env.message }}"
+      # - name: comment on the pull request
+      #   uses: mshick/add-pr-comment@v2
+      #   with:
+      #     repo-token: ${{ secrets.WANGZELIN_TOKEN }}
+      #     message: "${{ env.message }}"
