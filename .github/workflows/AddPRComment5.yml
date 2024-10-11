@@ -25,6 +25,9 @@ jobs:
             message='Thank you for your contribution! We will review the pull request and get back to you soon.'
           fi
 
+          # Print message for debugging
+          echo "Message to be posted: $message"
+
           # Comment on the PR using GitHub API
           curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
