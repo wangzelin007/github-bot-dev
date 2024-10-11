@@ -19,6 +19,7 @@ jobs:
           message=$(echo "$TITLE" | grep -oP '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
           # message=$(grep -oP '[{\[][^}\]]+[}\]]' <<< "$TITLE" | sed 's/[{}\[\]]//g')
           # message=$(echo "$TITLE")
+          echo "Message to be posted: $message"
           echo "message=$message" >> $GITHUB_ENV
           # if [ -z $message ]; then
               # echo "message=$(echo 'Thank you for your contribution! We will review the pull request and get back to you soon.')" >> $GITHUB_ENV
