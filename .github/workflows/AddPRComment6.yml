@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Get message from title
     permissions:
-      pull-requests: read
+      issues: read
       contents: read
     steps:
       - name: Get message
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Say thanks for the PR
     permissions:
-      pull-requests: write
+      issues: write
       contents: read
     steps:
       - name: Download pr message
