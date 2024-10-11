@@ -18,7 +18,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Extract message from the title
-          message=$(echo "$TITLE" | grep -oPm 1 '[{\[][^}\]]+[}\]]' | sed 's/{\|}\|\[\|\]//g')
+          message=$(echo "$TITLE" | grep -oPm 1 '[{\[][^}\]]+[}\]]' | head -1 | sed 's/{\|}\|\[\|\]//g')
 
           # If no message found, set default message
           if [ -z "$message" ]; then
