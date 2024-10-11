@@ -17,6 +17,7 @@ jobs:
           REPO: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "TITLE: $TITLE"
           # Extract message from the title
           message=$(echo "$TITLE" | grep -oPm 1 '[{\[][^}\]]+[}\]]' | head -1 | sed 's/{\|}\|\[\|\]//g')
 
