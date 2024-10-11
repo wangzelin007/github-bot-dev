@@ -57,7 +57,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Read the message directly from the file
-          message=$(cat message_result/output.txt)
+          message=$(cat ./output.txt)
           echo "Message: $message"
 
           # Comment on the PR using GitHub API
