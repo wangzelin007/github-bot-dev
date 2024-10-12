@@ -7,7 +7,7 @@ permissions:
 
 jobs:
   thank-user:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Say thanks for the PR
     steps:
       - name: Get message and comment on PR
@@ -15,7 +15,7 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.WANGZELIN_TOKEN }}
         run: |
           echo "TITLE: $TITLE"
           # Extract message from the title
