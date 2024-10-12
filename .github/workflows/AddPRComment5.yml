@@ -2,8 +2,7 @@ on:
   pull_request_target:
     types: [opened]
 
-permissions:
-  issues: write
+permissions: {}
 
 jobs:
   thank-user:
