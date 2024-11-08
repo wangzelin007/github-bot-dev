@@ -15,17 +15,15 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v3
-
-    - name: List changed files
-      id: changed-files
-      run: |
-        echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
     
-    - name: Check files and conditionally trigger CI
+    - name: Check changed files and conditionally trigger CI
       env:
         REPO_TOKEN: ${{ secrets.WANGZELIN_TOKEN }}
       run: |
-        FILES="${{ steps.changed-files.outputs.files }}"
+        FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+        echo "Changed files:"
+        echo "$FILES"
+        
         SHOULD_RUN_CI=true
 
         # Check if any of the modified files are .yml or in scripts/ directory
