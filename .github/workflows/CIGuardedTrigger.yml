@@ -1,0 +1,44 @@
+name: PR File Check and Conditional CI Trigger
+
+on:
+  pull_request_target:
+    types: [opened, synchronize]
+    branches:
+      - main # TODD
+
+permissions: {}
+
+jobs:
+  check-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+
+    - name: List changed files
+      id: changed-files
+      run: |
+        echo "::set-output name=files::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
+    
+    - name: Check files and conditionally trigger CI
+      env:
+        REPO_TOKEN: ${{ secrets.WANGZELIN_TOKEN }}
+      run: |
+        FILES="${{ steps.changed-files.outputs.files }}"
+        SHOULD_RUN_CI=true
+
+        # Check if any of the modified files are .yml or in scripts/ directory
+        for FILE in $FILES; do
+          if [[ "$FILE" == *.yml || "$FILE" == scripts/* ]]; then
+            SHOULD_RUN_CI=false
+            break
+          fi
+        done
+
+        # If SHOULD_RUN_CI is true, trigger CI by commenting /azp run
+        if [ "$SHOULD_RUN_CI" = true ]; then
+          curl -s -H "Authorization: token $PAT" \
+            -X POST -d '{"body":"/azp run"}' \
+            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+        fi
