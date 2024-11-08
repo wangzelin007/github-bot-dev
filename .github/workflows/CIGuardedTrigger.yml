@@ -38,7 +38,7 @@ jobs:
 
         # If SHOULD_RUN_CI is true, trigger CI by commenting /azp run
         if [ "$SHOULD_RUN_CI" = true ]; then
-          curl -s -H "Authorization: token $PAT" \
+          curl -s -H "Authorization: token $REPO_TOKEN" \
             -X POST -d '{"body":"/azp run"}' \
             "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
         fi
