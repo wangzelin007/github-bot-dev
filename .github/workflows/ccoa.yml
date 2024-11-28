@@ -1,0 +1,49 @@
+name: Add do-not-merge label
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - edited
+
+jobs:
+  add_label_and_comment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check current date securely
+        id: date_check
+        run: |
+          # Define the block date (Jan 7, 2025) securely
+          BLOCK_DATE=$(date -d "2025-01-07" +%s)
+
+          # Get the current date in seconds
+          CURRENT_DATE=$(date +%s)
+
+          # Validate the dates and safely output the result
+          if [ "$CURRENT_DATE" -lt "$BLOCK_DATE" ]; then
+            echo "continue=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "continue=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Add do-not-merge label
+        if: steps.date_check.outputs.continue == 'true'
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          labels: do-not-merge
+
+      - name: Comment on PR
+        if: steps.date_check.outputs.continue == 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.payload.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA"
+            })
