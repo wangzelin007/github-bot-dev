@@ -5,7 +5,6 @@ on:
     types:
       - opened
       - reopened
-      - edited
 
 permissions:
   pull-requests: write
@@ -44,9 +43,27 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            // Fetch existing comments
+            const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🚫All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA.'
-            })
+              issue_number: context.issue.number,
+            });
+
+            // Check if the specific comment already exists
+            const existingComment = comments.data.find(comment =>
+              comment.body.includes("🚫All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA")
+            );
+
+            if (existingComment) {
+              console.log("Comment already exists. Skipping...");
+            } else {
+              console.log("No comment found. Adding a new one...");
+              // Add a new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: "🚫All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA",
+              });
+            }
