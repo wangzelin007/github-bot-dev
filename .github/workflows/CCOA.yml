@@ -17,7 +17,7 @@ jobs:
       - name: Check current date securely
         id: date_check
         run: |
-          # Define the block date (Jan 7, 2025) securely
+          # Define the block date (Jan 7, 2025)
           BLOCK_DATE=$(date -d "2025-01-07" +%s)
 
           # Get the current date in seconds
