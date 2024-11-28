@@ -44,9 +44,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.issues.createComment({
-              issue_number: context.payload.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA"
-            })
+            const prNumber = context.payload.pull_request.number;
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+
+            await github.issues.createComment({
+              owner: owner,
+              repo: repo,
+              issue_number: prNumber,
+              body: "All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA."
+            });
