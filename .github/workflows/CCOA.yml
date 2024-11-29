@@ -73,3 +73,34 @@ jobs:
                 body: "🚫All pull requests will be blocked to merge until Jan 6, 2025 due to CCOA",
               });
             }
+
+      - name: Comment on PR2
+        if: steps.date_check.outputs.continue == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Fetch existing comments
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            // Check if the specific comment already exists
+            const existingComment = comments.data.find(comment =>
+              comment.body.includes("⚠️**Your changes in this PR will be released on Jan 14, 2025 due to CCOA (extend to Jan 6, 2025)**")
+            );
+
+            if (existingComment) {
+              console.log("Comment already exists. Skipping...");
+            } else {
+              console.log("No comment found. Adding a new one...");
+              // Add a new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: "⚠️**Your changes in this PR will be released on Jan 14, 2025 due to CCOA (extend to Jan 6, 2025)**",
+              });
+            }
