@@ -30,4 +30,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python ./create_release_tag.py
+        python .github/workflows/create_release_tag.py
