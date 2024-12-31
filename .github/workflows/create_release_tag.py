@@ -6,6 +6,8 @@ from typing import List, Dict, Tuple, Optional
 import sys
 
 TARGET_FILE = "src/index.json"
+# Get API URLs from environment
+RELEASE_API_URL, TAG_API_URL = get_api_urls()
 
 def get_api_urls() -> Tuple[str, str]:
     """Generate GitHub API URLs based on GITHUB_REPOSITORY environment variable."""
@@ -83,9 +85,6 @@ def main():
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3+json"
     }
-
-    # Get API URLs from environment
-    RELEASE_API_URL, TAG_API_URL = get_api_urls()
 
     try:
         added_lines = get_file_changes()
