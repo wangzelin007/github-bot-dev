@@ -6,8 +6,6 @@ from typing import List, Dict, Tuple, Optional
 import sys
 
 TARGET_FILE = "src/index.json"
-# Get API URLs from environment
-RELEASE_API_URL, TAG_API_URL = get_api_urls()
 
 def get_api_urls() -> Tuple[str, str]:
     """Generate GitHub API URLs based on GITHUB_REPOSITORY environment variable."""
@@ -56,17 +54,17 @@ def generate_tag_and_title(filename: str) -> Tuple[str, str]:
     release_title = f"Release {tag_name}"
     return tag_name, release_title
 
-def check_tag_exists(tag_name: str, headers: Dict[str, str]) -> bool:
+def check_tag_exists(url: str, tag_name: str, headers: Dict[str, str]) -> bool:
     response = requests.get(
-        f"{TAG_API_URL}/{tag_name}",
+        f"{url}/{tag_name}",
         headers=headers
     )
     return response.status_code == 200
 
-def create_release(release_data: Dict[str, str], headers: Dict[str, str]) -> None:
+def create_release(url: str, release_data: Dict[str, str], headers: Dict[str, str]) -> None:
     try:
         response = requests.post(
-            RELEASE_API_URL,
+            url,
             json=release_data,
             headers=headers
         )
@@ -81,6 +79,9 @@ def main():
         print("Error: GITHUB_TOKEN environment variable is required")
         sys.exit(1)
 
+    # Get API URLs from environment
+    release_url, tag_url = get_api_urls()
+    
     headers = {
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3+json"
@@ -105,7 +106,7 @@ def main():
                 text=True
             ).strip()
 
-            if check_tag_exists(commit_sha, headers):
+            if check_tag_exists(tag_url, commit_sha, headers):
                 print(f"Commit {commit_sha} already has a tag, skipping...")
                 return
 
@@ -116,7 +117,7 @@ def main():
                 "body": release_title
             }
 
-            create_release(release_data, headers)
+            create_release(release_url, release_data, headers)
 
         except ValueError as e:
             print(f"Error generating tag for filename {filename}: {e}")
