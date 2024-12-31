@@ -1,0 +1,33 @@
+name: Auto Release Tag
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/index.json'
+
+jobs:
+  create-release:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Create Release Tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python ./create_release_tag.py
