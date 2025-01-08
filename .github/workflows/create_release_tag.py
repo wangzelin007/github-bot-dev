@@ -39,16 +39,17 @@ def get_file_diff() -> List[str]:
     return added_lines
 
 
-def parse_filename(added_lines: List[str]) -> Optional[str]:
-    """Parse filename from added lines"""
+def parse_filenames(added_lines: List[str]) -> List[str]:
+    """Parse filenames from added lines"""
+    filenames = []
     for line in added_lines:
         if '"filename":' in line:
             try:
                 filename = line.split(":")[1].strip().strip('",')
-                return filename
+                filenames.append(filename)
             except IndexError:
                 print(f"Error parsing line: {line}")
-    return None
+    return filenames
 
 
 def get_extension_info(filename: str) -> Optional[Dict]:
@@ -220,63 +221,76 @@ def main():
             print("No changes found in index.json")
             return
 
-        # Parse filename from added lines
-        filename = parse_filename(added_lines)
-        if not filename:
-            print("No filename found in changes")
+        # Parse filenames from added lines
+        filenames = parse_filenames(added_lines)
+        if not filenames:
+            print("No filenames found in changes")
             return
 
-        # Get extension info from index.json
-        extension_info = get_extension_info(filename)
-        if not extension_info:
-            print("Could not get extension information from index.json")
-            return
+        print(f"Found {len(filenames)} files to process")
+        
+        # Process each filename
+        for filename in filenames:
+            print(f"\nProcessing {filename}...")
+            
+            # Get extension info from index.json
+            extension_info = get_extension_info(filename)
+            if not extension_info:
+                print(f"Could not get extension information for {filename}, skipping...")
+                continue
 
-        try:
-            tag_name, release_title, version = generate_tag_and_title(filename)
-
-            extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
-            print("Getting history notes from source code...")
-            history_note = get_history_note_from_source(version, extension_name)
-
-            if "No history notes found" in history_note:
-                print("No history notes found in source code, trying wheel...")
-                history_note = get_history_note(extension_info["downloadUrl"], version)
-
+            try:
+                tag_name, release_title, version = generate_tag_and_title(filename)
+                
+                # Check if tag already exists
+                if check_tag_exists(tag_url, tag_name, headers):
+                    print(f"Tag {tag_name} already exists, skipping...")
+                    continue
+                
+                # Try to get history notes from source code first
+                print(f"Getting history notes from source code...")
+                extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
+                history_note = get_history_note_from_source(version, extension_name)
+                
+                # If no notes found in source code, try wheel package
                 if "No history notes found" in history_note:
-                    print("No history notes found in wheel, using default release note...")
-                    history_note = f"Release {extension_name} {version}"
+                    print(f"No history notes found in source code, trying wheel package...")
+                    history_note = get_history_note(extension_info["downloadUrl"], version)
+                    
+                    # If still no notes found, use default release note
+                    if "No history notes found" in history_note:
+                        print(f"No history notes found in wheel package, using default release note...")
+                        history_note = f"Release {extension_name} {version}"
 
-            # Generate release body
-            release_body = generate_release_body(history_note, extension_info["sha256Digest"], filename)
+                # Generate release body
+                release_body = generate_release_body(history_note, extension_info["sha256Digest"], filename)
+                
+                commit_sha = subprocess.check_output(
+                    ["git", "rev-parse", "HEAD"],
+                    text=True
+                ).strip()
 
-            commit_sha = subprocess.check_output(
-                ["git", "rev-parse", "HEAD"],
-                text=True
-            ).strip()
+                release_data = {
+                    "tag_name": tag_name,
+                    "target_commitish": commit_sha,
+                    "name": release_title,
+                    "body": release_body
+                }
 
-            if check_tag_exists(tag_url, tag_name, headers):
-                print(f"Tag {tag_name} already exists, skipping...")
-                return
+                print(f"\nCreating release with data:")
+                print(f"Tag name: {tag_name}")
+                print(f"Release title: {release_title}")
+                print(f"Target commit: {commit_sha}")
+                print(f"Body preview: {release_body[:200]}...")
 
-            release_data = {
-                "tag_name": tag_name,
-                "target_commitish": commit_sha,
-                "name": release_title,
-                "body": release_body
-            }
+                create_release(release_url, release_data, headers, extension_info["downloadUrl"])
 
-            print("\nCreating release with data:")
-            print(f"Tag name: {tag_name}")
-            print(f"Release title: {release_title}")
-            print(f"Target commit: {commit_sha}")
-            print(f"Body preview: {release_body[:200]}...")
-
-            create_release(release_url, release_data, headers, extension_info["downloadUrl"])
-
-        except ValueError as e:
-            print(f"Error generating tag for filename {filename}: {e}")
-            return
+            except ValueError as e:
+                print(f"Error generating tag for filename {filename}: {e}")
+                continue
+            except Exception as e:
+                print(f"Unexpected error processing {filename}: {e}")
+                continue
 
     except Exception as e:
         print(f"Unexpected error: {e}")
