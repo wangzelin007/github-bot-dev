@@ -174,7 +174,7 @@ def get_history_note(wheel_url: str, version: str) -> str:
 
     except Exception as e:
         print(f"Error getting history notes: {e}")
-        return "Failed to retrieve history notes"
+        return "No history notes found for this version"
 
 
 def get_history_note_from_source(version: str, extension_name: str) -> str:
@@ -198,7 +198,7 @@ def get_history_note_from_source(version: str, extension_name: str) -> str:
 
     except Exception as e:
         print(f"Error reading history from source: {e}")
-        return "Failed to retrieve history notes"
+        return "No history notes found for this version"
 
 
 def main():
@@ -237,17 +237,15 @@ def main():
 
             # Get history notes from wheel package
             print("Getting history notes from wheel package...")
-            history_note = get_history_note(extension_info["downloadUrl"], version)
-            
-            # If no notes found in wheel, try source code
-            if "No history notes found" in history_note:
-                print("No history notes found in wheel, trying source code...")
-                extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
-                history_note = get_history_note_from_source(version, extension_name)
+            history_note = get_history_note_from_source(version, extension_name)
 
-                # If still no notes found, use default release note
+            if "No history notes found" in history_note:
+                print("No history notes found in source code, trying wheel...")
+                extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
+                history_note = get_history_note(extension_info["downloadUrl"], version)
+
                 if "No history notes found" in history_note:
-                    print("No history notes found in source code, using default release note...")
+                    print("No history notes found in wheel, using default release note...")
                     history_note = f"Release {extension_name} {version}"
 
             # Generate release body
