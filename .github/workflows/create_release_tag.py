@@ -235,13 +235,13 @@ def main():
         try:
             tag_name, release_title, version = generate_tag_and_title(filename)
 
+            extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
             # Get history notes from wheel package
             print("Getting history notes from wheel package...")
             history_note = get_history_note_from_source(version, extension_name)
 
             if "No history notes found" in history_note:
                 print("No history notes found in source code, trying wheel...")
-                extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
                 history_note = get_history_note(extension_info["downloadUrl"], version)
 
                 if "No history notes found" in history_note:
