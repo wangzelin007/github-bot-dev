@@ -164,7 +164,7 @@ def get_history_note(wheel_url: str, version: str) -> str:
                 history_content = wheel.read(history_files[0]).decode('utf-8')
 
                 # Match any line starting with the version number
-                version_pattern = rf"^{re.escape(version)}.*?\n\++\n(.*?)(?=^[\d.]+[a-z0-9].*?\n\++|\Z)"
+                version_pattern = rf"^{re.escape(version)}.*?\n(?:[-=+~]+\n)?(.*?)(?=^[\d.]+[a-z0-9].*?(?:\n[-=+~]+)?|\Z)"
                 match = re.search(version_pattern, history_content, re.DOTALL | re.MULTILINE)
 
                 if match:
@@ -188,7 +188,7 @@ def get_history_note_from_source(version: str, extension_name: str) -> str:
             history_content = f.read()
 
         # Match any line starting with the version number
-        version_pattern = rf"^{re.escape(version)}.*?\n\++\n(.*?)(?=^[\d.]+[a-z0-9].*?\n\++|\Z)"
+        version_pattern = rf"^{re.escape(version)}.*?\n(?:[-=+~]+\n)?(.*?)(?=^[\d.]+[a-z0-9].*?(?:\n[-=+~]+)?|\Z)"
         match = re.search(version_pattern, history_content, re.DOTALL | re.MULTILINE)
 
         if match:
