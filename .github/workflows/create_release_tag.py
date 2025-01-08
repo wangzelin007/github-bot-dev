@@ -236,8 +236,7 @@ def main():
             tag_name, release_title, version = generate_tag_and_title(filename)
 
             extension_name = re.match(r"^(.*?)[-_]\d+\.\d+\.\d+", filename).group(1)
-            # Get history notes from wheel package
-            print("Getting history notes from wheel package...")
+            print("Getting history notes from source code...")
             history_note = get_history_note_from_source(version, extension_name)
 
             if "No history notes found" in history_note:
