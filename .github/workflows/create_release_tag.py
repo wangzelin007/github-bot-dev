@@ -84,7 +84,7 @@ def get_file_info_by_sha(sha: str) -> Tuple[str, str]:
         raise
 
 
-def get_release_info(tag_name: str, base_url: str) -> Tuple[Optional[int], Optional[int]]:
+def get_release_info(tag_name: str) -> Tuple[Optional[int], Optional[int]]:
     try:
         url = f"{base_url}/releases/tags/{tag_name}"
 
@@ -203,16 +203,18 @@ def generate_tag_and_title(filename: str) -> Tuple[str, str, str]:
     return tag_name, release_title, version
 
 
-def check_tag_exists(url: str, tag_name: str) -> bool:
+def check_tag_exists(tag_name: str) -> bool:
+    url = f"{base_url}/tags/{tag_name}",
     response = requests.get(
-        f"{url}/{tag_name}",
+        url,
         headers=headers
     )
     return response.status_code == 200
 
 
-def create_release(url: str, release_data: Dict[str, str], wheel_url: str = None) -> None:
+def create_release(release_data: Dict[str, str], wheel_url: str = None) -> None:
     try:
+        url = f"{base_url}/releases"
         # Create release
         response = requests.post(
             url,
@@ -338,7 +340,7 @@ def main():
             else:
                 filename, wheel_url = get_file_info_by_sha(sha)
                 tag_name, release_title, version = generate_tag_and_title(filename)
-                release_id, release_body, asset_id = get_release_info(tag_name, f"{base_url}/releases/tags/{tag_name}")
+                release_id, release_body, asset_id = get_release_info(tag_name)
                 update_release_body(release_id, commit_sha, release_body)
                 update_release_asset(wheel_url, asset_id)
 
@@ -356,7 +358,7 @@ def main():
             try:
                 tag_name, release_title, version = generate_tag_and_title(filename)
                 # Check if tag already exists
-                if check_tag_exists(f"{base_url}/tags/{tag_name}", tag_name):
+                if check_tag_exists(tag_name):
                     print(f"Tag {tag_name} already exists, skipping...")
                     continue
 
@@ -391,7 +393,7 @@ def main():
                 print(f"Target commit: {commit_sha}")
                 print(f"Body preview: {release_body[:200]}...")
 
-                create_release(f"{base_url}/releases", release_data, extension_info["downloadUrl"])
+                create_release(release_data, extension_info["downloadUrl"])
 
             except ValueError as e:
                 print(f"Error generating tag for filename {filename}: {e}")
