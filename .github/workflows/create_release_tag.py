@@ -147,21 +147,35 @@ def update_release_asset(wheel_url: str, asset_id: int) -> bool:
         wheel_response = requests.get(wheel_url)
         wheel_response.raise_for_status()
 
-        update_url = f"{base_url}/releases/assets/{asset_id}"
+        delete_url = f"{base_url}/releases/assets/{asset_id}"
+        delete_response = requests.delete(delete_url, headers=headers)
+        delete_response.raise_for_status()
+        print("Successfully deleted old asset")
+
+        release_url = f"{base_url}/releases/assets/{asset_id}"
+        release_response = requests.get(release_url, headers=headers)
+        release_response.raise_for_status()
+        release_data = release_response.json()
+        upload_url = release_data["upload_url"].replace("{?name,label}", "")
+
+        upload_headers = headers.copy()
+        upload_headers["Content-Type"] = "application/octet-stream"
         params = {"name": os.path.basename(wheel_url)}
 
-        print(f"Updating wheel to {update_url}")
-        update_response = requests.patch(
-            update_url,
-            headers=headers,
+        print(f"Uploading new wheel to {upload_url}")
+        upload_response = requests.post(
+            upload_url,
+            headers=upload_headers,
             params=params,
             data=wheel_response.content
         )
-        update_response.raise_for_status()
-        print("Successfully update wheel file")
+        upload_response.raise_for_status()
+        print("Successfully updated wheel file")
+        return True
+
     except requests.RequestException as e:
         print(f"Failed to update release asset: {e}")
-        if hasattr(e.response, 'text'):
+        if hasattr(e, 'response') and e.response is not None:
             print(f"Response: {e.response.text}")
         return False
     except Exception as e:
