@@ -98,7 +98,7 @@
                     "summary": "Microsoft Azure CLI Extension for Partner Center",
                     "version": "0.2.3"
                 },
-                "sha256Digest": "5e364c5f375e9cdbbd7117c571d45ef434648c0f68b894fd1ebcf6cec26e4790"
+                "sha256Digest": "5e364c5f375e9cdbbd7117c571d45ef434648c0f68b894fd1ebcf6cec26e4791"
             },
             {
                 "downloadUrl": "https://github.com/Azure/partnercenter-cli-extension/releases/download/v0.2.4-alpha/partnercenter-0.2.4-py3-none-any.whl",
@@ -152,7 +152,7 @@
                     "summary": "Microsoft Azure CLI Extension for Partner Center",
                     "version": "0.2.4"
                 },
-                "sha256Digest": "daca7562e92ddeb0195d2e85bdad22f0873010359ada146b1bfd8e415244cac0"
+                "sha256Digest": "daca7562e92ddeb0195d2e85bdad22f0873010359ada146b1bfd8e415244cac1"
             }
         ]
     },
