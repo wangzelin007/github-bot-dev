@@ -108,10 +108,19 @@ def get_release_info(tag_name: str) -> Tuple[Optional[int], Optional[int]]:
         return None, None, None
 
 
-def update_release_body(release_id: int, commit_sha: str, old_body: str) -> bool:
+def update_release_body(release_id: int, commit_sha: str, old_body: str, sha: str, tag_name: str) -> bool:
     try:
         url = f"{base_url}/releases/{release_id}"
-
+        ref_url = f"{base_url}/git/refs/tags/{tag_name}"
+        data = {
+            "sha": commit_sha,
+            "force": True
+        }
+        print(f"Updating tag {tag_name} to point to commit {commit_sha}")
+        response = requests.patch(ref_url, headers=headers, json=data)
+        response.raise_for_status()
+        print(f"Successfully updated tag {tag_name}")
+        
         sha_pattern = r'[a-fA-F0-9]{64}'
         new_body = old_body
 
@@ -120,11 +129,10 @@ def update_release_body(release_id: int, commit_sha: str, old_body: str) -> bool
             old_sha = match.group()
 
             if old_sha != commit_sha:
-                new_body = new_body.replace(old_sha, commit_sha)
+                new_body = new_body.replace(old_sha, sha)
                 break
 
         payload = {
-            "target_commitish": commit_sha,
             "body": new_body
         }
 
@@ -360,7 +368,7 @@ def main():
                     filename, wheel_url = get_file_info_by_sha(sha)
                     tag_name, release_title, version = generate_tag_and_title(filename)
                     release_id, release_body, asset_id = get_release_info(tag_name)
-                    update_release_body(release_id, commit_sha, release_body) if release_id else None
+                    update_release_body(release_id, commit_sha, release_body, sha, tag_name) if release_id else None
                     update_release_asset(wheel_url, asset_id, release_id) if release_id else None
 
         print(f"Found {len(filenames)} files to process")
