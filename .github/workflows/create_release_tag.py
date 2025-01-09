@@ -249,9 +249,11 @@ def create_release(release_data: Dict[str, str], wheel_url: str = None) -> None:
             params = {"name": os.path.basename(wheel_url)}
 
             print(f"Uploading wheel to {upload_url}")
+            upload_headers = headers.copy()
+            upload_headers["Content-Type"] = "application/octet-stream"
             upload_response = requests.post(
                 upload_url,
-                headers=headers,
+                headers=upload_headers,
                 params=params,
                 data=wheel_response.content
             )
