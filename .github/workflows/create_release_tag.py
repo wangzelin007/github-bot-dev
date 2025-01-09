@@ -218,7 +218,7 @@ def generate_tag_and_title(filename: str) -> Tuple[str, str, str]:
 
 
 def check_tag_exists(tag_name: str) -> bool:
-    url = f"{base_url}/tags/{tag_name}",
+    url = f"{base_url}/tags/{tag_name}"
     response = requests.get(
         url,
         headers=headers
