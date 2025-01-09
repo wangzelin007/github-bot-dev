@@ -152,11 +152,11 @@ def update_release_asset(wheel_url: str, asset_id: int) -> bool:
         delete_response.raise_for_status()
         print("Successfully deleted old asset")
 
-        release_url = f"{base_url}/releases/assets/{asset_id}"
-        release_response = requests.get(release_url, headers=headers)
-        release_response.raise_for_status()
-        release_data = release_response.json()
-        upload_url = release_data["upload_url"].replace("{?name,label}", "")
+        release_url = f"{base_url}/releases/{release_id}"
+        response = requests.get(release_url, headers=headers)
+        response.raise_for_status()
+        release_info = response.json()
+        upload_url = release_info["upload_url"].replace("{?name,label}", "")
 
         upload_headers = headers.copy()
         upload_headers["Content-Type"] = "application/octet-stream"
