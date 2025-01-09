@@ -51,6 +51,7 @@ def parse_filenames(added_lines: List[str]) -> List[str]:
 
 
 def parse_sha256_digest(added_lines: List[str]) -> str:
+    shas = []
     for line in added_lines:
         if "sha256Digest" in line:
             try:
@@ -58,10 +59,10 @@ def parse_sha256_digest(added_lines: List[str]) -> str:
                 if sha_match:
                     sha = sha_match.group(1)
                     print(f"get sha256Digest change: {sha}")
-                    return sha
+                    shas.append(sha)
             except IndexError:
                 print(f"Error parsing line: {line}")
-    return None
+    return shas
 
 
 def get_file_info_by_sha(sha: str) -> Tuple[str, str]:
@@ -350,16 +351,17 @@ def main():
                 ).strip()
         if not filenames:
             print("No filenames found in changes")
-            sha = parse_sha256_digest(added_lines)
-            if not sha:
+            shas = parse_sha256_digest(added_lines)
+            if not shas:
                 print("No sha256Digest found in changes")
                 return
             else:
-                filename, wheel_url = get_file_info_by_sha(sha)
-                tag_name, release_title, version = generate_tag_and_title(filename)
-                release_id, release_body, asset_id = get_release_info(tag_name)
-                update_release_body(release_id, commit_sha, release_body) if release_id else None
-                update_release_asset(wheel_url, asset_id, release_id) if release_id else None
+                for sha in shas:
+                    filename, wheel_url = get_file_info_by_sha(sha)
+                    tag_name, release_title, version = generate_tag_and_title(filename)
+                    release_id, release_body, asset_id = get_release_info(tag_name)
+                    update_release_body(release_id, commit_sha, release_body) if release_id else None
+                    update_release_asset(wheel_url, asset_id, release_id) if release_id else None
 
         print(f"Found {len(filenames)} files to process")
         # Process each filename
