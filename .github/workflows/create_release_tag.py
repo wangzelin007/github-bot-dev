@@ -54,9 +54,11 @@ def parse_sha256_digest(added_lines: List[str]) -> str:
     for line in added_lines:
         if "sha256Digest" in line:
             try:
-                sha = line.split("sha256Digest")[1].strip().strip('",')
-                print(f"get sha256Digest change: {sha}")
-                return sha
+                sha_match = re.search(r'"sha256Digest"\s*:\s*"([a-fA-F0-9]{64})"', line)
+                if sha_match:
+                    sha = sha_match.group(1)
+                    print(f"get sha256Digest change: {sha}")
+                    return sha
             except IndexError:
                 print(f"Error parsing line: {line}")
     return None
