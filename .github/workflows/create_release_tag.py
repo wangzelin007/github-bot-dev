@@ -357,8 +357,8 @@ def main():
                 filename, wheel_url = get_file_info_by_sha(sha)
                 tag_name, release_title, version = generate_tag_and_title(filename)
                 release_id, release_body, asset_id = get_release_info(tag_name)
-                update_release_body(release_id, commit_sha, release_body)
-                update_release_asset(wheel_url, asset_id)
+                update_release_body(release_id, commit_sha, release_body) if release_id else None
+                update_release_asset(wheel_url, asset_id) if asset_id else None
 
         print(f"Found {len(filenames)} files to process")
         # Process each filename
