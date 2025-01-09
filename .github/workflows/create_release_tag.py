@@ -141,16 +141,17 @@ def update_release_body(release_id: int, commit_sha: str, old_body: str) -> bool
         return False
 
 
-def update_release_asset(wheel_url: str, asset_id: int) -> bool:
+def update_release_asset(wheel_url: str, asset_id: int, release_id: int) -> bool:
     try:
         print(f"Downloading wheel from {wheel_url}")
         wheel_response = requests.get(wheel_url)
         wheel_response.raise_for_status()
 
-        delete_url = f"{base_url}/releases/assets/{asset_id}"
-        delete_response = requests.delete(delete_url, headers=headers)
-        delete_response.raise_for_status()
-        print("Successfully deleted old asset")
+        if asset_id is not None:
+            delete_url = f"{base_url}/releases/assets/{asset_id}"
+            delete_response = requests.delete(delete_url, headers=headers)
+            delete_response.raise_for_status()
+            print("Successfully deleted old asset")
 
         release_url = f"{base_url}/releases/{release_id}"
         response = requests.get(release_url, headers=headers)
@@ -358,7 +359,7 @@ def main():
                 tag_name, release_title, version = generate_tag_and_title(filename)
                 release_id, release_body, asset_id = get_release_info(tag_name)
                 update_release_body(release_id, commit_sha, release_body) if release_id else None
-                update_release_asset(wheel_url, asset_id) if asset_id else None
+                update_release_asset(wheel_url, asset_id, release_id) if release_id else None
 
         print(f"Found {len(filenames)} files to process")
         # Process each filename
