@@ -10,7 +10,7 @@ on:
 
 jobs:
   thank-user:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Say thanks for the Issue
     steps:
       - name: Set comment message
