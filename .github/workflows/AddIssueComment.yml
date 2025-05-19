@@ -1,12 +1,28 @@
 on:
   issues:
     types: [opened]
-   
+  workflow_dispatch:
+    inputs:
+      wzl_comment:
+        description: "Custom comment message (leave blank or 'false' to use default)"
+        required: false
+        default: "false"
+
 jobs:
   thank-user:
     runs-on: ubuntu-20.04
     name: Say thanks for the Issue
     steps:
+      - name: Set comment message
+        id: set-message
+        run: |
+          # 获取 wzl_comment，自动触发时为空
+          WZL_COMMENT="${{ github.event.inputs.wzl_comment }}"
+          if [ -z "$WZL_COMMENT" ] || [ "$WZL_COMMENT" = "false" ]; then
+            echo "message=Thank you for opening this issue, we will look into it." >> $GITHUB_OUTPUT
+          else
+            echo "message=$WZL_COMMENT" >> $GITHUB_OUTPUT
+          fi
       - name: comment on the issue
         uses: hasura/comment-progress@v2.2.0
         with:
@@ -14,4 +30,4 @@ jobs:
           repository: 'wangzelin007/github-bot-dev'
           number: ${{ github.event.issue.number }}
           id: thank-you-comment
-          message: 'Thank you for opening this issue, we will look into it.'
+          message: ${{ steps.set-message.outputs.message }}
